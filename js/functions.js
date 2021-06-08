@@ -2251,3 +2251,43 @@ var SEMICOLON = SEMICOLON || {};
 	});
 
 })(jQuery);
+
+
+
+		jQuery(window).on( 'pluginIsotopeReady', function(){
+	
+			let $container = $('.grid-container');
+	
+			function getHashFilter() {
+				let hash = location.hash;
+				// get filter=filterName
+				let matches = location.hash.match( /filter=([^&]+)/i );
+				let hashFilter = matches && matches[1];
+				return hashFilter && decodeURIComponent( hashFilter );
+			}
+	
+			function onHashchange() {
+				let hashFilter = getHashFilter();
+				if ( !hashFilter ) {
+					return;
+				}
+				console.log( hashFilter );
+				// filter isotope
+				$container.isotope({ filter: hashFilter });
+				// set selected class on button
+				if ( hashFilter ) {
+					$('.grid-filter li').removeClass('activeFilter');
+					$('.grid-filter li').find('[data-filter="' + hashFilter + '"]').parent('li').addClass('activeFilter');
+	
+					let filterElOff	= $('[data-filter="' + hashFilter + '"]').offset().top;
+					$('html,body').stop(true, true).animate({
+						'scrollTop': filterElOff - 100
+					}, 1250, 'easeInOutQuad');
+				}
+			}
+	
+			$(window).on( 'hashchange', onHashchange );
+			// trigger event handler to init Isotope
+			onHashchange();
+	
+		});
